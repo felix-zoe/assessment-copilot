@@ -1,0 +1,60 @@
+# 校招测评智能辅助系统 (Assessment Copilot) 配置文件模板
+# 复制本文件为 configs/config.yaml 并填入具体的 API Key 即可使用
+
+app:
+  # 工作模式: "copilot" (安全辅助模式，仅做即时分析由人工点击作答，零切屏风险)
+  mode: "copilot"
+  
+  # 全局热键
+  hotkey_trigger: "<alt>+c"     # 手动触发单题分析
+
+
+  # 屏幕选区配置 (若全为 0 则默认截取当前主屏幕)
+  capture:
+    monitor_index: 1            # 目标显示器序号 (1 为主屏)
+    crop_region: null           # 可选 [left, top, right, bottom]，null 表示全屏
+
+llm:
+  # 当前激活的供应商: "openai_like" | "gemini" | "ollama"
+  active_provider: "openai_like"
+
+  providers:
+    # 通用兼容供应商 (适用于通义千问 Qwen2.5-VL、DeepSeek、智谱 GLM、硅基流动等)
+    openai_like:
+      base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+      api_key: "sk-your-dashscope-api-key"
+      model: "qwen2.5-vl-72b-instruct"
+      temperature: 0.1
+      max_tokens: 1024
+      timeout: 20.0
+
+    # Google Gemini 官方渠道
+    gemini:
+      api_key: "AIzaSy-your-gemini-api-key"
+      model: "gemini-1.5-flash"
+      temperature: 0.1
+      timeout: 20.0
+
+    # 商汤日日新 (SenseNova) 平台 (含 DeepSeek Flash 系列模型)
+    sensenova:
+      base_url: "https://token.sensenova.cn/v1"
+      api_key: "your-sensenova-api-key"
+      model: "deepseek-v4-flash"    # 或 deepseek-flash
+      temperature: 0.1
+      max_tokens: 1024
+      timeout: 25.0
+
+    # 本地离线部署 (Ollama)
+    ollama:
+      base_url: "http://localhost:11434/v1"
+      api_key: "ollama"
+      model: "qwen2.5-vl:7b"
+      temperature: 0.1
+      timeout: 30.0
+
+rpa:
+  human_delay_min: 3.5          # 模拟思考最小延迟 (秒)
+  human_delay_max: 6.5          # 模拟思考最大延迟 (秒)
+  next_question_delay: 2.0      # 点击「下一题」后的等待过渡延迟 (秒)
+  bezier_jitter: 1.5            # 鼠标移动抖动幅度 (像素)
+  max_auto_questions: 100       # 全自动单次循环防死循环上限题数
